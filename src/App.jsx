@@ -69,7 +69,7 @@ function Navbar() {
       </div>
 
       {/* CTA */}
-      <a href="https://wa.me/34600000000" target="_blank" rel="noopener noreferrer"
+      <a href="https://wa.me/34666068310?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20informaci%C3%B3n%20sobre%20vuestro%20servicio%20de%20gesti%C3%B3n%20de%20Redes%20Sociales.%20Gracias." target="_blank" rel="noopener noreferrer"
         className="hidden md:flex items-center gap-2.5 bg-orange text-white font-dm font-semibold text-sm rounded-full hover:scale-[1.03] active:scale-[0.97] transition-all duration-200 shrink-0"
         style={{ padding: '12px 24px' }}>
         <WhatsAppIcon className="w-4 h-4" />
@@ -94,7 +94,7 @@ function Navbar() {
               {link}
             </a>
           ))}
-          <a href="https://wa.me/34600000000" target="_blank" rel="noopener noreferrer"
+          <a href="https://wa.me/34666068310?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20informaci%C3%B3n%20sobre%20vuestro%20servicio%20de%20gesti%C3%B3n%20de%20Redes%20Sociales.%20Gracias." target="_blank" rel="noopener noreferrer"
             className="flex items-center justify-center gap-2.5 bg-orange text-white font-dm font-semibold text-sm rounded-full"
             style={{ padding: '14px 28px' }}>
             <WhatsAppIcon className="w-4 h-4" />
@@ -127,98 +127,138 @@ function Hero() {
     return () => ctx.revert()
   }, [])
 
-  /* Video scroll scrubbing */
+  /* Video scroll scrubbing (desktop) / autoplay (mobile) */
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
 
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+      || window.matchMedia('(max-width: 768px)').matches
+
     let st
     let raf
 
-    const initScrub = () => {
-      const dur = video.duration
-      if (!dur || !isFinite(dur)) return
+    if (isMobile) {
+      // Mobile: autoplay video, no scrubbing, no pin
+      video.autoplay = true
+      video.loop = true
+      video.play().catch(() => {})
 
-      video.currentTime = 0
-
-      // Smooth lerp: interpolate toward target instead of jumping
-      let currentT = 0
-      let targetT = 0
-      const lerpFactor = 0.12 // lower = smoother but slower response
-
-      const tick = () => {
-        // Lerp toward target
-        currentT += (targetT - currentT) * lerpFactor
-        // Only seek when there's a meaningful diff (1 frame ≈ 0.042s at 24fps)
-        if (Math.abs(video.currentTime - currentT) > 0.02) {
-          video.currentTime = currentT
-        }
-        raf = requestAnimationFrame(tick)
-      }
-      raf = requestAnimationFrame(tick)
-
+      // Parallax overlay effect instead of scrubbing
       st = ScrollTrigger.create({
         trigger: '.hero-section',
         start: 'top top',
-        end: '+=200%',
-        pin: true,
-        pinSpacing: true,
+        end: 'bottom top',
+        scrub: 1,
         onUpdate: (self) => {
-          targetT = self.progress * dur
+          const overlay = document.querySelector('.hero-overlay')
+          if (overlay) overlay.style.transform = `translateY(${self.progress * 30}%)`
         },
       })
-    }
-
-    const onReady = () => {
-      video.removeEventListener('loadeddata', onReady)
-      video.removeEventListener('canplaythrough', onReady)
-      requestAnimationFrame(() => initScrub())
-    }
-
-    if (video.readyState >= 3) {
-      requestAnimationFrame(() => initScrub())
     } else {
-      video.addEventListener('loadeddata', onReady)
-      video.addEventListener('canplaythrough', onReady)
+      // Desktop: scroll scrubbing with lerp
+      const initScrub = () => {
+        const dur = video.duration
+        if (!dur || !isFinite(dur)) return
+
+        video.currentTime = 0
+
+        let currentT = 0
+        let targetT = 0
+        const lerpFactor = 0.12
+
+        const tick = () => {
+          currentT += (targetT - currentT) * lerpFactor
+          if (Math.abs(video.currentTime - currentT) > 0.02) {
+            video.currentTime = currentT
+          }
+          raf = requestAnimationFrame(tick)
+        }
+        raf = requestAnimationFrame(tick)
+
+        st = ScrollTrigger.create({
+          trigger: '.hero-section',
+          start: 'top top',
+          end: '+=200%',
+          pin: true,
+          pinSpacing: true,
+          onUpdate: (self) => {
+            targetT = self.progress * dur
+          },
+        })
+      }
+
+      const onReady = () => {
+        video.removeEventListener('loadeddata', onReady)
+        video.removeEventListener('canplaythrough', onReady)
+        requestAnimationFrame(() => initScrub())
+      }
+
+      if (video.readyState >= 3) {
+        requestAnimationFrame(() => initScrub())
+      } else {
+        video.addEventListener('loadeddata', onReady)
+        video.addEventListener('canplaythrough', onReady)
+      }
     }
 
     return () => {
-      video.removeEventListener('loadeddata', onReady)
-      video.removeEventListener('canplaythrough', onReady)
+      video.removeEventListener('loadeddata', () => {})
+      video.removeEventListener('canplaythrough', () => {})
       if (st) st.kill()
       if (raf) cancelAnimationFrame(raf)
     }
   }, [])
 
+  const WA_URL = 'https://wa.me/34666068310?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20informaci%C3%B3n%20sobre%20vuestro%20servicio%20de%20gesti%C3%B3n%20de%20Redes%20Sociales.%20Gracias.'
+
   return (
     <section
       ref={heroRef}
       className="hero-section"
-      style={{ position: 'relative', height: '100dvh', display: 'flex', alignItems: 'flex-end', width: '100%', backgroundColor: '#1C1410' }}
+      style={{
+        position: 'relative',
+        height: '100dvh',
+        minHeight: '-webkit-fill-available',
+        display: 'flex',
+        alignItems: 'flex-end',
+        width: '100%',
+        backgroundColor: '#1C1410',
+      }}
     >
-      {/* Fallback image — behind video, only visible if video fails */}
+      {/* Fallback image */}
       <img
         src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1800&q=80"
         alt=""
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', zIndex: 0 }}
       />
 
-      {/* Video background — on top of fallback image */}
+      {/* Video background */}
       <video
         ref={videoRef}
         src="/hero-video-scrub.mp4"
         muted
         playsInline
         preload="auto"
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', zIndex: 0 }}
       />
 
-      {/* Dark overlay — z-index 1 */}
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 1 }}></div>
+      {/* Dark overlay — z-index 1, class for mobile parallax */}
+      <div className="hero-overlay" style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 1 }}></div>
       <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: '55%', background: 'linear-gradient(to top, rgba(0,0,0,0.75), transparent)', zIndex: 1 }}></div>
 
-      {/* Content — z-index 2 */}
-      <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: '1280px', margin: '0 auto', paddingLeft: 'clamp(1.5rem, 8vw, 120px)', paddingRight: 'clamp(1.5rem, 8vw, 120px)', paddingBottom: 'clamp(3rem, 5vh, 64px)' }}>
+      {/* Content — z-index 2, padded for navbar + safe areas */}
+      <div style={{
+        position: 'relative',
+        zIndex: 2,
+        width: '100%',
+        maxWidth: '1280px',
+        margin: '0 auto',
+        paddingLeft: 'clamp(1.5rem, 8vw, 120px)',
+        paddingRight: 'clamp(1.5rem, 8vw, 120px)',
+        paddingBottom: 'clamp(3rem, 5vh, 64px)',
+        paddingTop: 'clamp(5rem, 10vh, 7rem)',
+      }}>
         <div style={{ maxWidth: '720px' }}>
           {/* Badge */}
           <div className="hero-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: '8px 18px', borderRadius: '50px', marginBottom: '1.5rem', background: 'rgba(255,107,43,0.18)', border: '1px solid rgba(255,107,43,0.3)' }}>
@@ -229,22 +269,22 @@ function Hero() {
           </div>
 
           {/* Title */}
-          <h1 className="font-syne font-[800]" style={{ fontSize: 'clamp(48px, 8vw, 88px)', lineHeight: 0.95, letterSpacing: '-0.02em', marginBottom: '1.5rem', wordBreak: 'break-word' }}>
+          <h1 className="font-syne font-[800]" style={{ fontSize: 'clamp(40px, 8vw, 88px)', lineHeight: 0.95, letterSpacing: '-0.02em', marginBottom: '1.5rem', wordBreak: 'break-word' }}>
             <span className="hero-l1" style={{ display: 'block', color: '#fff' }}>Más clientes</span>
             <span className="hero-l2" style={{ display: 'block', color: '#fff' }}>desde redes</span>
             <span className="hero-l3" style={{ display: 'block', color: '#FF6B2B', fontStyle: 'italic' }}>sociales.</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="hero-sub font-dm" style={{ fontWeight: 300, fontSize: '18px', maxWidth: '480px', marginBottom: '2rem', color: 'rgba(255,255,255,0.72)', lineHeight: 1.6 }}>
+          <p className="hero-sub font-dm" style={{ fontWeight: 300, fontSize: 'clamp(15px, 2.5vw, 18px)', maxWidth: '480px', marginBottom: '2rem', color: 'rgba(255,255,255,0.72)', lineHeight: 1.6 }}>
             Gestionamos las redes sociales de tu restaurante para que tú te centres en lo que mejor sabes hacer: cocinar.
           </p>
 
           {/* CTAs */}
           <div className="hero-cta" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
-            <a href="https://wa.me/34600000000" target="_blank" rel="noopener noreferrer"
+            <a href={WA_URL} target="_blank" rel="noopener noreferrer"
               className="group"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: '#FF6B2B', color: '#fff', fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: '16px', padding: '18px 36px', borderRadius: '50px', textDecoration: 'none', position: 'relative', overflow: 'hidden', transition: 'transform 0.2s' }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: '#FF6B2B', color: '#fff', fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: 'clamp(14px, 2vw, 16px)', padding: 'clamp(14px, 2vw, 18px) clamp(24px, 4vw, 36px)', borderRadius: '50px', textDecoration: 'none', position: 'relative', overflow: 'hidden', transition: 'transform 0.2s' }}
               onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.03)'}
               onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
             >
@@ -262,16 +302,16 @@ function Hero() {
         </div>
 
         {/* Stats */}
-        <div className="hero-stats" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+        <div className="hero-stats" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 'clamp(1.5rem, 4vw, 2.5rem)', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
           {[
             { value: '50+', label: 'restaurantes' },
             { value: '4', label: 'redes gestionadas' },
             { value: '30', label: 'días para resultados' },
           ].map((stat, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}>
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 'clamp(1.5rem, 4vw, 2.5rem)' }}>
               <div>
-                <span className="font-mono" style={{ fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 500, color: '#fff' }}>{stat.value}</span>
-                <span className="font-dm" style={{ display: 'block', fontSize: '12px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '2px' }}>{stat.label}</span>
+                <span className="font-mono" style={{ fontSize: 'clamp(20px, 3vw, 32px)', fontWeight: 500, color: '#fff' }}>{stat.value}</span>
+                <span className="font-dm" style={{ display: 'block', fontSize: 'clamp(10px, 1.5vw, 12px)', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '2px' }}>{stat.label}</span>
               </div>
               {i < 2 && <div style={{ width: '1px', height: '32px', background: 'rgba(255,255,255,0.15)' }}></div>}
             </div>
@@ -822,7 +862,7 @@ function PricingCard({ badge, badgeColor, name, tagline, price, contentGrid, con
 
       {/* ── CTA ── */}
       {ctaStyle === 'solid' ? (
-        <a href="https://wa.me/34600000000" target="_blank" rel="noopener noreferrer"
+        <a href="https://wa.me/34666068310?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20informaci%C3%B3n%20sobre%20vuestro%20servicio%20de%20gesti%C3%B3n%20de%20Redes%20Sociales.%20Gracias." target="_blank" rel="noopener noreferrer"
           className="group relative overflow-hidden"
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', width: '100%', padding: '20px 32px', borderRadius: '50px', background: '#FF6B2B', color: 'white', fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: '16px', transition: 'transform 0.2s', textDecoration: 'none' }}
           onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.03)'}
@@ -833,7 +873,7 @@ function PricingCard({ badge, badgeColor, name, tagline, price, contentGrid, con
           <span className="relative z-10">Contactar por WhatsApp</span>
         </a>
       ) : (
-        <a href="https://wa.me/34600000000" target="_blank" rel="noopener noreferrer"
+        <a href="https://wa.me/34666068310?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20informaci%C3%B3n%20sobre%20vuestro%20servicio%20de%20gesti%C3%B3n%20de%20Redes%20Sociales.%20Gracias." target="_blank" rel="noopener noreferrer"
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', width: '100%', padding: '20px 32px', borderRadius: '50px', border: '2px solid #FF6B2B', color: '#FF6B2B', fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: '16px', transition: 'all 0.2s', textDecoration: 'none', background: 'transparent' }}
           onMouseEnter={e => { e.currentTarget.style.background = '#FF6B2B'; e.currentTarget.style.color = 'white'; e.currentTarget.style.transform = 'scale(1.03)' }}
           onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#FF6B2B'; e.currentTarget.style.transform = 'scale(1)' }}
@@ -1050,7 +1090,7 @@ function FAQ() {
           <p className="font-dm text-gray-text text-base" style={{ marginBottom: '2rem', lineHeight: 1.6 }}>
             Si no encuentras tu respuesta, escríbenos por WhatsApp y te respondemos al momento.
           </p>
-          <a href="https://wa.me/34600000000" target="_blank" rel="noopener noreferrer"
+          <a href="https://wa.me/34666068310?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20informaci%C3%B3n%20sobre%20vuestro%20servicio%20de%20gesti%C3%B3n%20de%20Redes%20Sociales.%20Gracias." target="_blank" rel="noopener noreferrer"
             className="inline-flex items-center gap-3 bg-orange text-white font-dm font-semibold rounded-full hover:scale-[1.03] active:scale-[0.97] transition-all duration-200"
             style={{ padding: '16px 32px', fontSize: '15px' }}>
             <WhatsAppIcon className="w-5 h-5" />
@@ -1110,7 +1150,7 @@ function FooterCTA() {
         <p className="font-dm text-white/50 text-lg max-w-lg mx-auto" style={{ marginBottom: '2.5rem', lineHeight: 1.6 }}>
           Cuéntanos tu caso y en menos de 24 horas tienes una propuesta sin compromiso.
         </p>
-        <a href="https://wa.me/34600000000" target="_blank" rel="noopener noreferrer"
+        <a href="https://wa.me/34666068310?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20informaci%C3%B3n%20sobre%20vuestro%20servicio%20de%20gesti%C3%B3n%20de%20Redes%20Sociales.%20Gracias." target="_blank" rel="noopener noreferrer"
           className="group inline-flex items-center gap-3 bg-orange text-white font-dm font-semibold rounded-full hover:scale-[1.03] active:scale-[0.97] transition-all duration-200 relative overflow-hidden"
           style={{ padding: '22px 48px', fontSize: '18px' }}>
           <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></span>
