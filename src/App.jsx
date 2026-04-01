@@ -127,84 +127,67 @@ function Hero() {
     return () => ctx.revert()
   }, [])
 
-  /* Video scroll scrubbing (desktop) / autoplay (mobile) */
+  /* Video scroll scrubbing — identical on all devices */
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
 
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-      || window.matchMedia('(max-width: 768px)').matches
-
     let st
     let raf
 
-    if (isMobile) {
-      // Mobile: autoplay video, no scrubbing, no pin
-      video.autoplay = true
-      video.loop = true
-      video.play().catch(() => {})
+    // Unlock video on iOS — play+pause on first touch allows currentTime control
+    document.addEventListener('touchstart', () => {
+      video.play()
+      video.pause()
+    }, { once: true })
 
-      // Parallax overlay effect instead of scrubbing
+    const initScrub = () => {
+      const dur = video.duration
+      if (!dur || !isFinite(dur)) return
+
+      video.currentTime = 0
+
+      let currentT = 0
+      let targetT = 0
+      const lerpFactor = 0.12
+
+      const tick = () => {
+        currentT += (targetT - currentT) * lerpFactor
+        if (Math.abs(video.currentTime - currentT) > 0.02) {
+          video.currentTime = currentT
+        }
+        raf = requestAnimationFrame(tick)
+      }
+      raf = requestAnimationFrame(tick)
+
       st = ScrollTrigger.create({
         trigger: '.hero-section',
         start: 'top top',
-        end: 'bottom top',
-        scrub: 1,
+        end: '+=200%',
+        pin: true,
+        pinSpacing: true,
         onUpdate: (self) => {
-          const overlay = document.querySelector('.hero-overlay')
-          if (overlay) overlay.style.transform = `translateY(${self.progress * 30}%)`
+          targetT = self.progress * dur
         },
       })
+    }
+
+    const onReady = () => {
+      video.removeEventListener('loadeddata', onReady)
+      video.removeEventListener('canplaythrough', onReady)
+      requestAnimationFrame(() => initScrub())
+    }
+
+    if (video.readyState >= 3) {
+      requestAnimationFrame(() => initScrub())
     } else {
-      // Desktop: scroll scrubbing with lerp
-      const initScrub = () => {
-        const dur = video.duration
-        if (!dur || !isFinite(dur)) return
-
-        video.currentTime = 0
-
-        let currentT = 0
-        let targetT = 0
-        const lerpFactor = 0.12
-
-        const tick = () => {
-          currentT += (targetT - currentT) * lerpFactor
-          if (Math.abs(video.currentTime - currentT) > 0.02) {
-            video.currentTime = currentT
-          }
-          raf = requestAnimationFrame(tick)
-        }
-        raf = requestAnimationFrame(tick)
-
-        st = ScrollTrigger.create({
-          trigger: '.hero-section',
-          start: 'top top',
-          end: '+=200%',
-          pin: true,
-          pinSpacing: true,
-          onUpdate: (self) => {
-            targetT = self.progress * dur
-          },
-        })
-      }
-
-      const onReady = () => {
-        video.removeEventListener('loadeddata', onReady)
-        video.removeEventListener('canplaythrough', onReady)
-        requestAnimationFrame(() => initScrub())
-      }
-
-      if (video.readyState >= 3) {
-        requestAnimationFrame(() => initScrub())
-      } else {
-        video.addEventListener('loadeddata', onReady)
-        video.addEventListener('canplaythrough', onReady)
-      }
+      video.addEventListener('loadeddata', onReady)
+      video.addEventListener('canplaythrough', onReady)
     }
 
     return () => {
-      video.removeEventListener('loadeddata', () => {})
-      video.removeEventListener('canplaythrough', () => {})
+      video.removeEventListener('loadeddata', onReady)
+      video.removeEventListener('canplaythrough', onReady)
       if (st) st.kill()
       if (raf) cancelAnimationFrame(raf)
     }
