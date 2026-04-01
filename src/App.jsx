@@ -141,6 +141,13 @@ function Hero() {
       video.pause()
     }, { once: true })
 
+    // Force GPU compositing for smoother mobile rendering
+    video.style.transform = 'translateZ(0)'
+    video.style.willChange = 'transform'
+
+    // Reduce callback frequency for smoother mobile scrub
+    ScrollTrigger.config({ limitCallbacks: true, syncInterval: 40 })
+
     const initScrub = () => {
       const dur = video.duration
       if (!dur || !isFinite(dur)) return
@@ -149,11 +156,11 @@ function Hero() {
 
       let currentT = 0
       let targetT = 0
-      const lerpFactor = 0.12
+      const lerpFactor = 0.1
 
       const tick = () => {
         currentT += (targetT - currentT) * lerpFactor
-        if (Math.abs(video.currentTime - currentT) > 0.02) {
+        if (Math.abs(video.currentTime - currentT) > 0.015) {
           video.currentTime = currentT
         }
         raf = requestAnimationFrame(tick)
@@ -164,8 +171,11 @@ function Hero() {
         trigger: '.hero-section',
         start: 'top top',
         end: '+=200%',
+        scrub: 2.5,
         pin: true,
         pinSpacing: true,
+        fastScrollEnd: true,
+        preventOverlaps: true,
         onUpdate: (self) => {
           targetT = self.progress * dur
         },
@@ -237,14 +247,17 @@ function Hero() {
         width: '100%',
         maxWidth: '1280px',
         margin: '0 auto',
-        paddingLeft: 'clamp(1.5rem, 8vw, 120px)',
-        paddingRight: 'clamp(1.5rem, 8vw, 120px)',
-        paddingBottom: 'clamp(3rem, 5vh, 64px)',
-        paddingTop: 'clamp(5rem, 10vh, 7rem)',
+        paddingLeft: 'clamp(1.25rem, 5vw, 120px)',
+        paddingRight: 'clamp(1.25rem, 5vw, 120px)',
+        paddingBottom: 'clamp(2rem, 5vh, 64px)',
+        paddingTop: 'clamp(5rem, 12vh, 7rem)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'clamp(1rem, 3vh, 1.5rem)',
       }}>
-        <div style={{ maxWidth: '720px' }}>
+        <div style={{ maxWidth: '720px', display: 'flex', flexDirection: 'column' }}>
           {/* Badge */}
-          <div className="hero-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: '8px 18px', borderRadius: '50px', marginBottom: '1.5rem', background: 'rgba(255,107,43,0.18)', border: '1px solid rgba(255,107,43,0.3)' }}>
+          <div className="hero-badge" style={{ display: 'inline-flex', alignItems: 'center', alignSelf: 'flex-start', gap: '10px', padding: '8px 18px', borderRadius: '50px', marginBottom: 'clamp(0.75rem, 2vh, 1.25rem)', background: 'rgba(255,107,43,0.18)', border: '1px solid rgba(255,107,43,0.3)', position: 'relative' }}>
             <span className="pulse-dot" style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#FF6B2B' }}></span>
             <span className="font-dm" style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 500, color: '#FFB899' }}>
               Agencia de social media para restaurantes
@@ -252,19 +265,19 @@ function Hero() {
           </div>
 
           {/* Title */}
-          <h1 className="font-syne font-[800]" style={{ fontSize: 'clamp(40px, 8vw, 88px)', lineHeight: 0.95, letterSpacing: '-0.02em', marginBottom: '1.5rem', wordBreak: 'break-word' }}>
+          <h1 className="font-syne font-[800]" style={{ fontSize: 'clamp(2.4rem, 10vw, 88px)', lineHeight: 1.05, letterSpacing: '-0.02em', marginTop: 0, marginBottom: 'clamp(1rem, 2vh, 1.5rem)', wordBreak: 'break-word' }}>
             <span className="hero-l1" style={{ display: 'block', color: '#fff' }}>Más clientes</span>
             <span className="hero-l2" style={{ display: 'block', color: '#fff' }}>desde redes</span>
             <span className="hero-l3" style={{ display: 'block', color: '#FF6B2B', fontStyle: 'italic' }}>sociales.</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="hero-sub font-dm" style={{ fontWeight: 300, fontSize: 'clamp(15px, 2.5vw, 18px)', maxWidth: '480px', marginBottom: '2rem', color: 'rgba(255,255,255,0.72)', lineHeight: 1.6 }}>
+          <p className="hero-sub font-dm" style={{ fontWeight: 300, fontSize: 'clamp(14px, 2.5vw, 18px)', maxWidth: '480px', marginBottom: 'clamp(1.25rem, 3vh, 2rem)', color: 'rgba(255,255,255,0.72)', lineHeight: 1.6 }}>
             Gestionamos las redes sociales de tu restaurante para que tú te centres en lo que mejor sabes hacer: cocinar.
           </p>
 
           {/* CTAs */}
-          <div className="hero-cta" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
+          <div className="hero-cta" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem', marginBottom: 'clamp(1.5rem, 3vh, 2.5rem)' }}>
             <a href={WA_URL} target="_blank" rel="noopener noreferrer"
               className="group"
               style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: '#FF6B2B', color: '#fff', fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: 'clamp(14px, 2vw, 16px)', padding: 'clamp(14px, 2vw, 18px) clamp(24px, 4vw, 36px)', borderRadius: '50px', textDecoration: 'none', position: 'relative', overflow: 'hidden', transition: 'transform 0.2s' }}
