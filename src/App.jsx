@@ -588,6 +588,7 @@ function FeatureTerminal() {
   const [lines, setLines] = useState([])
   const [currentLine, setCurrentLine] = useState('')
   const sectionRef = useRef(null)
+  const terminalRef = useRef(null)
   const lineIndexRef = useRef(0)
 
   const allLines = [
@@ -637,29 +638,38 @@ function FeatureTerminal() {
     return () => { clearInterval(interval); ctx.revert() }
   }, [])
 
+  // Auto-scroll terminal to bottom when lines change
+  useEffect(() => {
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight
+    }
+  }, [lines, currentLine])
+
   return (
     <section ref={sectionRef} className="feat-terminal bg-black" style={sectionPadding}>
       <div className="items-center" style={{ ...innerContainer, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
         {/* Terminal */}
-        <div className="bg-[#1a1a1a] rounded-2xl border border-white/10 overflow-hidden order-2 md:order-1">
+        <div className="bg-[#1a1a1a] rounded-2xl border border-white/10 order-2 md:order-1" style={{ height: '380px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
           {/* Title bar */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '14px 20px', borderBottom: '1px solid rgba(255,255,255,0.05)', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '14px 20px', borderBottom: '1px solid rgba(255,255,255,0.05)', flexShrink: 0 }}>
             <div className="w-3 h-3 rounded-full bg-red-500/60"></div>
             <div className="w-3 h-3 rounded-full bg-yellow-500/60"></div>
             <div className="w-3 h-3 rounded-full bg-green-500/60"></div>
             <span className="font-mono text-xs text-white/30" style={{ marginLeft: '8px' }}>gastrovisual-cli</span>
           </div>
-          {/* Content */}
-          <div className="font-mono text-sm" style={{ padding: '1.5rem', minHeight: '320px', lineHeight: '2rem' }}>
-            {lines.map((line, i) => (
-              <div key={i} className="text-white/50" style={{ marginBottom: '0.5rem' }}>
-                <span className="text-orange" style={{ marginRight: '10px' }}>▸</span>{line}
+          {/* Content — fixed height, scroll internal, lines anchor to bottom */}
+          <div ref={terminalRef} className="font-mono text-sm" style={{ padding: '1.5rem', flex: 1, overflowY: 'auto', lineHeight: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+            <div>
+              {lines.map((line, i) => (
+                <div key={i} className="text-white/50" style={{ marginBottom: '0.5rem' }}>
+                  <span className="text-orange" style={{ marginRight: '10px' }}>▸</span>{line}
+                </div>
+              ))}
+              <div className="text-white" style={{ marginTop: '0.5rem' }}>
+                <span className="text-orange" style={{ marginRight: '10px' }}>▸</span>
+                {currentLine}
+                <span className="cursor-blink text-orange" style={{ marginLeft: '2px' }}>█</span>
               </div>
-            ))}
-            <div className="text-white" style={{ marginTop: '0.5rem' }}>
-              <span className="text-orange" style={{ marginRight: '10px' }}>▸</span>
-              {currentLine}
-              <span className="cursor-blink text-orange" style={{ marginLeft: '2px' }}>█</span>
             </div>
           </div>
         </div>
