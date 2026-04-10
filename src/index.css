@@ -70,6 +70,11 @@ body {
   100% { transform: translateX(100px); opacity: 0; }
 }
 
+/* Video loading spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* How it works grid responsive */
 @media (max-width: 768px) {
   .hiw-grid {

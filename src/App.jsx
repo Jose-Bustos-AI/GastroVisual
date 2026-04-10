@@ -110,6 +110,7 @@ function Navbar() {
 function Hero() {
   const heroRef = useRef(null)
   const videoRef = useRef(null)
+  const [videoReady, setVideoReady] = useState(false)
 
   /* Text entrance animation */
   useEffect(() => {
@@ -152,6 +153,7 @@ function Hero() {
       const dur = video.duration
       if (!dur || !isFinite(dur)) return
 
+      setVideoReady(true)
       video.currentTime = 0
 
       let currentT = 0
@@ -182,22 +184,24 @@ function Hero() {
       })
     }
 
+    // Start scrubbing as soon as metadata is available (duration known)
+    // instead of waiting for full video download (readyState >= 3)
     const onReady = () => {
+      video.removeEventListener('loadedmetadata', onReady)
       video.removeEventListener('loadeddata', onReady)
-      video.removeEventListener('canplaythrough', onReady)
       requestAnimationFrame(() => initScrub())
     }
 
-    if (video.readyState >= 3) {
+    if (video.readyState >= 1) {
       requestAnimationFrame(() => initScrub())
     } else {
+      video.addEventListener('loadedmetadata', onReady)
       video.addEventListener('loadeddata', onReady)
-      video.addEventListener('canplaythrough', onReady)
     }
 
     return () => {
+      video.removeEventListener('loadedmetadata', onReady)
       video.removeEventListener('loadeddata', onReady)
-      video.removeEventListener('canplaythrough', onReady)
       if (st) st.kill()
       if (raf) cancelAnimationFrame(raf)
     }
@@ -233,8 +237,16 @@ function Hero() {
         muted
         playsInline
         preload="auto"
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', zIndex: 0 }}
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', zIndex: 0, opacity: videoReady ? 1 : 0, transition: 'opacity 0.5s ease' }}
       />
+
+      {/* Loading indicator — shown while video loads */}
+      {!videoReady && (
+        <div style={{ position: 'absolute', bottom: '20px', right: '20px', zIndex: 3, display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.5)', borderRadius: '50px', padding: '8px 16px' }}>
+          <span style={{ width: '8px', height: '8px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#FF6B2B', animation: 'spin 0.8s linear infinite' }}></span>
+          <span className="font-dm" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)' }}>Cargando vídeo…</span>
+        </div>
+      )}
 
       {/* Dark overlay — z-index 1, class for mobile parallax */}
       <div className="hero-overlay" style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 1 }}></div>
