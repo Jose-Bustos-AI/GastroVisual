@@ -492,31 +492,40 @@ function FeatureContent() {
 
   const plans = [
     {
-      name: 'Plan Básico', price: '249', badge: null, badgeColor: '',
-      grid: [['4', 'Fotos'], ['2', 'Carruseles'], ['2', 'Reels'], ['8', 'Stories']],
+      name: 'Plan Inicio', price: '90', badge: null, badgeColor: '',
+      grid: [['10', 'Fotos del restaurante'], ['2', 'Carruseles']],
+      gridNote: 'Las fotos las proporciona el restaurante',
       networks: ['Instagram', 'Facebook'],
-      total: '16 contenidos este mes',
-      dot: 'bg-green-500'
+      total: '12 contenidos al mes',
+      dot: 'bg-gray-400',
     },
     {
-      name: 'Plan Crecimiento', price: '399', badge: 'Más popular', badgeColor: 'bg-orange text-white',
-      grid: [['4', 'Fotos'], ['4', 'Carruseles'], ['4', 'Reels'], ['8', 'Stories']],
-      networks: ['Instagram', 'Facebook', 'TikTok', 'YouTube'],
-      total: '20 contenidos este mes',
-      dot: 'bg-orange'
+      name: 'Plan Impulso', price: '249', badge: null, badgeColor: '',
+      grid: [['10', 'Fotos estáticas'], ['4', 'Carruseles'], ['2', 'Reels / vídeos'], ['8', 'Stories']],
+      networks: ['Instagram', 'Facebook'],
+      total: '24 contenidos al mes',
+      dot: 'bg-green-500',
     },
     {
-      name: 'Plan Premium', price: '599', badge: 'Ads incluidos', badgeColor: 'bg-purple-100 text-purple-700',
-      grid: [['6', 'Fotos'], ['6', 'Carruseles'], ['6', 'Reels'], ['8', 'Stories']],
+      name: 'Plan Dominio', price: '399', badge: 'Más popular', badgeColor: 'bg-orange text-white',
+      grid: [['10', 'Fotos estáticas'], ['6', 'Carruseles'], ['4', 'Reels / vídeos'], ['8', 'Stories']],
       networks: ['Instagram', 'Facebook', 'TikTok', 'YouTube'],
-      total: '26 contenidos este mes',
-      dot: 'bg-purple-500'
+      total: '28 contenidos al mes',
+      dot: 'bg-orange',
+    },
+    {
+      name: 'Plan Imperio', price: '599', badge: null, badgeColor: '',
+      grid: [['10', 'Fotos estáticas'], ['8', 'Carruseles'], ['6', 'Reels / vídeos'], ['8', 'Stories']],
+      networks: ['Instagram', 'Facebook', 'TikTok', 'YouTube'],
+      extraBadge: 'Avatar Digital IA incluido gratis',
+      total: '32 contenidos al mes',
+      dot: 'bg-orange',
     },
   ]
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveCard(prev => (prev + 1) % 3)
+      setActiveCard(prev => (prev + 1) % plans.length)
     }, 3500)
 
     const ctx = gsap.context(() => {
@@ -589,12 +598,26 @@ function FeatureContent() {
               ))}
             </div>
 
+            {/* Grid note */}
+            {plan.gridNote && (
+              <p className="font-dm italic" style={{ fontSize: '11px', color: '#FF6B2B', textAlign: 'center', marginTop: '-0.75rem', marginBottom: '1rem' }}>{plan.gridNote}</p>
+            )}
+
             {/* Networks */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '1.25rem' }}>
               {plan.networks.map(net => (
                 <span key={net} className="font-dm bg-gray-surface text-gray-text" style={{ fontSize: '12px', padding: '6px 14px', borderRadius: '50px' }}>{net}</span>
               ))}
             </div>
+
+            {/* Extra badge (e.g. Avatar IA) */}
+            {plan.extraBadge && (
+              <div style={{ marginBottom: '1.25rem' }}>
+                <span className="font-syne font-[700]" style={{ fontSize: '11px', background: '#FF6B2B', color: '#fff', padding: '6px 14px', borderRadius: '50px', display: 'inline-block' }}>
+                  ★ {plan.extraBadge}
+                </span>
+              </div>
+            )}
 
             {/* Total — pushed to bottom */}
             <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '10px', background: '#FFF3EE', borderRadius: '50px', padding: '10px 16px' }}>
