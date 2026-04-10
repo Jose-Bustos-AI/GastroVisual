@@ -962,7 +962,7 @@ function PublicidadAddons() {
       <div className="pub-blocks" style={{ ...innerContainer, maxWidth: '1100px' }}>
 
         {/* ── BLOQUE 1 — ¿Qué es la publicidad segmentada? ── */}
-        <div className="pub-block" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center', marginBottom: '80px' }}>
+        <div className="pub-block pub-explainer" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center', marginBottom: '80px' }}>
           {/* Left col — text */}
           <div className="pub-block-text">
             <h3 className="font-syne font-[700] text-black" style={{ fontSize: '24px', marginBottom: '16px' }}>Tu restaurante, solo ante quien importa</h3>
@@ -994,7 +994,7 @@ function PublicidadAddons() {
             </div>
             <div style={{ padding: '24px 20px' }}>
               <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                <span className="font-syne font-[800]" style={{ fontSize: '52px', color: '#0F0F0F', lineHeight: 1 }}>40.000</span>
+                <span className="pub-card-number font-syne font-[800]" style={{ fontSize: '52px', color: '#0F0F0F', lineHeight: 1 }}>40.000</span>
                 <span className="font-dm font-[300] text-gray-text" style={{ fontSize: '13px', display: 'block', marginTop: '4px' }}>personas alcanzadas</span>
               </div>
               <div style={{ height: '1px', background: '#EBEBEB', marginBottom: '16px' }}></div>
@@ -1007,7 +1007,7 @@ function PublicidadAddons() {
                 ].map(([label, value], i) => (
                   <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span className="font-mono text-gray-text" style={{ fontSize: '12px' }}>{label}</span>
-                    <span className="font-mono font-medium" style={{ fontSize: '12px', color: '#0F0F0F' }}>{value}</span>
+                    <span className="font-mono font-medium" style={{ fontSize: '12px', color: '#0F0F0F', whiteSpace: 'nowrap' }}>{value}</span>
                   </div>
                 ))}
               </div>
@@ -1443,7 +1443,7 @@ function FooterCTA() {
           Cuéntanos tu caso y en menos de 24 horas tienes una propuesta sin compromiso.
         </p>
         <a href="https://wa.me/34666068310?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20informaci%C3%B3n%20sobre%20vuestro%20servicio%20de%20gesti%C3%B3n%20de%20Redes%20Sociales.%20Gracias." target="_blank" rel="noopener noreferrer"
-          className="group inline-flex items-center gap-3 bg-orange text-white font-dm font-semibold rounded-full hover:scale-[1.03] active:scale-[0.97] transition-all duration-200 relative overflow-hidden"
+          className="fcta-btn group inline-flex items-center gap-3 bg-orange text-white font-dm font-semibold rounded-full hover:scale-[1.03] active:scale-[0.97] transition-all duration-200 relative overflow-hidden"
           style={{ padding: '22px 48px', fontSize: '18px' }}>
           <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></span>
           <WhatsAppIcon className="w-6 h-6 relative z-10" />

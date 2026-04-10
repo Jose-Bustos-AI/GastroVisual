@@ -86,8 +86,30 @@ body {
   .pub-addon-grid {
     grid-template-columns: 1fr !important;
   }
-  .pub-block > div:first-child {
+
+  /* Publicidad explainer — stack to 1 col, card full width + centered */
+  .pub-explainer {
     grid-template-columns: 1fr !important;
+    gap: 32px !important;
+    margin-bottom: 48px !important;
+  }
+  .pub-explainer .pub-block-card {
+    max-width: 360px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .pub-card-number {
+    font-size: 42px !important;
+  }
+
+  /* Footer CTA — smaller button and title on mobile */
+  .fcta-btn {
+    font-size: 15px !important;
+    padding: 14px 24px !important;
+    max-width: 80vw;
+  }
+  .fcta-content h2 {
+    font-size: clamp(28px, 7vw, 40px) !important;
   }
 }
 
