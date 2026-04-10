@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { ChevronRight, Plus, X, Check, BarChart3 } from 'lucide-react'
+import { ChevronRight, Plus, X, Check, BarChart3, Info, Megaphone, Bot, MapPin } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -752,7 +752,7 @@ function Manifesto() {
 }
 
 /* ─── PRICING CARD COMPONENT ─── */
-function PricingCard({ badge, badgeColor, name, tagline, price, contentGrid, contentTotal, networks, includes, checkColor, adsSection, addons, ctaStyle, featured }) {
+function PricingCard({ badge, badgeColor, badgeStyle, extraBadges, name, tagline, price, contentGrid, contentTotal, contentNote, networks, includes, checkColor, adBlocks, addons, ctaStyle, featured }) {
   const checkIcon = <Check className="w-4 h-4 shrink-0" style={{ marginTop: '2px' }} />
 
   return (
@@ -770,12 +770,19 @@ function PricingCard({ badge, badgeColor, name, tagline, price, contentGrid, con
     >
       {/* ── Header ── */}
       <div style={{ marginBottom: '2rem' }}>
-        <span
-          className={`inline-block font-dm text-xs font-semibold px-4 py-1.5 rounded-full ${badgeColor}`}
-          style={{ marginBottom: '1rem', display: 'inline-block' }}
-        >
-          {badge}
-        </span>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '1rem' }}>
+          <span
+            className={`inline-block font-dm text-xs font-semibold px-4 py-1.5 rounded-full ${badgeColor}`}
+            style={{ ...badgeStyle }}
+          >
+            {badge}
+          </span>
+          {extraBadges && extraBadges.map((eb, i) => (
+            <span key={i} className="inline-block font-dm text-xs font-[800] px-4 py-1.5 rounded-full" style={eb.style}>
+              {eb.icon && <span style={{ marginRight: '4px' }}>{eb.icon}</span>}{eb.label}
+            </span>
+          ))}
+        </div>
         <h3 className="font-syne font-[800] text-black" style={{ fontSize: 'clamp(22px, 2vw, 26px)', marginBottom: '6px', lineHeight: 1.2 }}>{name}</h3>
         <p className="font-dm italic text-gray-text" style={{ fontSize: '14px', marginBottom: '0' }}>{tagline}</p>
       </div>
@@ -802,6 +809,9 @@ function PricingCard({ badge, badgeColor, name, tagline, price, contentGrid, con
         <div className="bg-orange-soft" style={{ borderRadius: '50px', padding: '10px 16px', textAlign: 'center', marginTop: '0.75rem' }}>
           <span className="font-dm font-medium text-orange" style={{ fontSize: '13px' }}>{contentTotal}</span>
         </div>
+        {contentNote && (
+          <p className="font-dm italic" style={{ fontSize: '11px', color: '#FF6B2B', marginTop: '0.5rem', textAlign: 'center' }}>{contentNote}</p>
+        )}
       </div>
 
       {/* ── Networks ── */}
@@ -826,7 +836,7 @@ function PricingCard({ badge, badgeColor, name, tagline, price, contentGrid, con
                 <span className="font-dm text-black/80" style={{ fontSize: '14px', lineHeight: 1.55 }}>
                   {isArr ? item[0] : item}
                   {isArr && (
-                    <span className="font-dm bg-green-50 text-green-700" style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '4px', marginLeft: '8px' }}>
+                    <span className="font-dm" style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '4px', marginLeft: '8px', background: item[2] || '#f0fdf4', color: item[3] || '#166534' }}>
                       {item[1]}
                     </span>
                   )}
@@ -838,22 +848,34 @@ function PricingCard({ badge, badgeColor, name, tagline, price, contentGrid, con
       </div>
 
       {/* ── Ads ── */}
-      <div style={{ borderLeft: `3px solid ${adsSection.borderColor}`, padding: '1.125rem 1.25rem', marginBottom: '1.5rem', background: adsSection.bg, borderRadius: '0 14px 14px 0' }}>
-        <span className="font-dm font-semibold text-black" style={{ fontSize: '13px', display: 'block', marginBottom: '0.75rem' }}>
-          {adsSection.title}
-        </span>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {adsSection.rows.map(([label, value, valueColor], i) => (
-            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span className="font-mono text-gray-text" style={{ fontSize: '12px' }}>{label}</span>
-              <span className="font-mono font-medium" style={{ fontSize: '12px', color: valueColor || '#0F0F0F' }}>{value}</span>
-            </div>
-          ))}
+      {adBlocks && (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '1.5rem' }}>
+        {/* Green block — management included */}
+        <div style={{ borderLeft: '3px solid #22C55E', padding: '0.875rem 1.125rem', background: '#F0FDF4', borderRadius: '0 14px 14px 0' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
+            <span className="font-dm font-semibold" style={{ fontSize: '13px', color: '#0F0F0F' }}>{adBlocks.greenTitle}</span>
+            <span className="font-dm" style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '4px', background: '#dcfce7', color: '#166534' }}>incluida en el plan</span>
+          </div>
+          <p className="font-dm" style={{ fontSize: '12px', color: '#166534', margin: 0 }}>Creamos, optimizamos y monitorizamos tus campañas.</p>
         </div>
-        {adsSection.note && (
-          <p className="font-dm italic text-gray-text" style={{ fontSize: '10px', marginTop: '0.75rem' }}>{adsSection.note}</p>
-        )}
+        {/* Gray block — budget paid by client */}
+        <div style={{ borderLeft: '3px solid #BBBBBB', padding: '0.875rem 1.125rem', background: '#F8F8F6', borderRadius: '0 14px 14px 0' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
+            <span className="font-dm font-semibold" style={{ fontSize: '13px', color: '#0F0F0F' }}>Presupuesto publicitario</span>
+            <span className="font-dm" style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '4px', background: '#EBEBEB', color: '#666' }}>lo paga el restaurante</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {adBlocks.budgetRows.map(([label, value], i) => (
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span className="font-mono text-gray-text" style={{ fontSize: '12px' }}>{label}</span>
+                <span className="font-mono font-medium" style={{ fontSize: '12px', color: '#0F0F0F' }}>{value}</span>
+              </div>
+            ))}
+          </div>
+          <p className="font-dm italic" style={{ fontSize: '10px', color: '#ABABAB', marginTop: '0.6rem', marginBottom: 0 }}>{adBlocks.budgetNote}</p>
+        </div>
       </div>
+      )}
 
       {/* ── Add-ons ── */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '2rem' }}>
@@ -892,6 +914,225 @@ function PricingCard({ badge, badgeColor, name, tagline, price, contentGrid, con
   )
 }
 
+/* ─── PUBLICIDAD + ADD-ONS ─── */
+function PublicidadAddons() {
+  const sectionRef = useRef(null)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.pub-header', {
+        scrollTrigger: { trigger: '.pub-header', start: 'top 80%' },
+        opacity: 0, y: 40, duration: 0.8,
+      })
+      gsap.from('.pub-block', {
+        scrollTrigger: { trigger: '.pub-blocks', start: 'top 75%' },
+        opacity: 0, y: 50, duration: 0.7, stagger: 0.15,
+      })
+    }, sectionRef)
+    return () => ctx.revert()
+  }, [])
+
+  return (
+    <section ref={sectionRef} className="bg-gray-surface" style={sectionPadding}>
+      {/* ── Header ── */}
+      <div className="pub-header text-center" style={{ ...innerContainer, maxWidth: '1100px', marginBottom: '64px' }}>
+        <span className="inline-block font-dm text-[11px] uppercase tracking-[0.15em] font-semibold text-orange bg-orange-soft px-4 py-1.5 rounded-full" style={{ marginBottom: '20px' }}>
+          Publicidad + Add-ons
+        </span>
+        <h2 className="font-syne font-[800] text-black" style={{ fontSize: 'clamp(36px, 5vw, 48px)', marginBottom: '16px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+          La publicidad que<br /><span className="italic text-orange">llena</span> mesas
+        </h2>
+        <p className="font-dm font-[300] text-gray-text" style={{ fontSize: '17px', maxWidth: '560px', margin: '0 auto', lineHeight: 1.7 }}>
+          Muchos restaurantes no saben que por el precio de un café al día pueden llegar a miles de personas en su barrio. Te explicamos cómo funciona y qué incluye cada add-on.
+        </p>
+      </div>
+
+      <div className="pub-blocks" style={{ ...innerContainer, maxWidth: '1100px' }}>
+
+        {/* ── BLOQUE 1 — ¿Qué es la publicidad segmentada? ── */}
+        <div className="pub-block" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center', marginBottom: '80px' }}>
+          {/* Left col — text */}
+          <div className="pub-block-text">
+            <h3 className="font-syne font-[700] text-black" style={{ fontSize: '24px', marginBottom: '16px' }}>Tu restaurante, solo ante quien importa</h3>
+            <p className="font-dm font-[300]" style={{ fontSize: '15px', lineHeight: 1.8, color: '#444', marginBottom: '24px' }}>
+              La publicidad en Meta (Instagram y Facebook) y TikTok no funciona como un cartel en la calle que ve todo el mundo. Funciona al revés: tú decides exactamente a quién quieres llegar.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
+              {[
+                'Personas que viven o trabajan a menos de 5 km de tu restaurante',
+                'Usuarios que han buscado restaurantes como el tuyo recientemente',
+                'Gente con el perfil exacto de tu cliente ideal: edad, intereses, hábitos',
+              ].map((t, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#FF6B2B', flexShrink: 0, marginTop: '7px' }}></span>
+                  <span className="font-dm font-[300]" style={{ fontSize: '14px', color: '#444', lineHeight: 1.6 }}>{t}</span>
+                </div>
+              ))}
+            </div>
+            <p className="font-dm italic text-gray-text" style={{ fontSize: '14px', lineHeight: 1.6 }}>
+              Nosotros configuramos esa segmentación. Tú solo pones el presupuesto directamente en tu cuenta de Meta o TikTok.
+            </p>
+          </div>
+
+          {/* Right col — example card */}
+          <div className="pub-block-card" style={{ background: '#FFFFFF', borderRadius: '20px', border: '1.5px solid #EBEBEB', boxShadow: '0 4px 24px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
+            <div style={{ background: '#FF6B2B', padding: '16px 20px', borderRadius: '20px 20px 0 0' }}>
+              <span className="font-syne font-[700]" style={{ fontSize: '14px', color: '#fff', display: 'block' }}>Ejemplo real</span>
+              <span className="font-dm font-[300]" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.8)' }}>Restaurante en Murcia</span>
+            </div>
+            <div style={{ padding: '24px 20px' }}>
+              <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                <span className="font-syne font-[800]" style={{ fontSize: '52px', color: '#0F0F0F', lineHeight: 1 }}>40.000</span>
+                <span className="font-dm font-[300] text-gray-text" style={{ fontSize: '13px', display: 'block', marginTop: '4px' }}>personas alcanzadas</span>
+              </div>
+              <div style={{ height: '1px', background: '#EBEBEB', marginBottom: '16px' }}></div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
+                {[
+                  ['Inversión diaria', '5€/día'],
+                  ['Total al mes', '150€'],
+                  ['Radio de impacto', '5 km del local'],
+                  ['Coste por persona', '0,004€'],
+                ].map(([label, value], i) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span className="font-mono text-gray-text" style={{ fontSize: '12px' }}>{label}</span>
+                    <span className="font-mono font-medium" style={{ fontSize: '12px', color: '#0F0F0F' }}>{value}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ height: '1px', background: '#EBEBEB', marginBottom: '14px' }}></div>
+              <p className="font-dm italic" style={{ fontSize: '11px', color: '#ABABAB', margin: 0 }}>Con una campaña básica gestionada por GastroVisual durante 30 días.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* ── BLOQUE 2 — Tarjetas de add-ons ── */}
+        <div className="pub-block" style={{ marginBottom: '64px' }}>
+          <div className="text-center" style={{ marginBottom: '40px' }}>
+            <h3 className="font-syne font-[700] text-black" style={{ fontSize: '28px', marginBottom: '10px' }}>¿Qué incluye cada add-on?</h3>
+            <p className="font-dm font-[300] text-gray-text" style={{ fontSize: '15px' }}>Servicios que puedes añadir a cualquier plan según lo que necesites.</p>
+          </div>
+
+          <div className="pub-addon-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', alignItems: 'start' }}>
+
+            {/* Card 1 — Gestión de publicidad */}
+            <div className="bg-white" style={{ borderRadius: '28px', border: '1px solid #e5e5e5', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', padding: '2rem', display: 'flex', flexDirection: 'column' }}>
+              <Megaphone className="w-6 h-6 text-orange" style={{ marginBottom: '16px' }} />
+              <div style={{ marginBottom: '4px' }}>
+                <span className="font-syne font-[800]" style={{ fontSize: '32px', color: '#0F0F0F' }}>+49€</span>
+                <span className="font-dm text-gray-text" style={{ fontSize: '14px', marginLeft: '4px' }}>/mes</span>
+              </div>
+              <span className="font-mono" style={{ fontSize: '10px', color: '#ABABAB', display: 'block', marginBottom: '16px' }}>ya incluido en planes Impulso, Dominio e Imperio</span>
+              <h4 className="font-syne font-[700] text-black" style={{ fontSize: '18px', marginBottom: '8px' }}>Gestión de anuncios</h4>
+              <p className="font-dm font-[300]" style={{ fontSize: '13px', color: '#444', lineHeight: 1.7, marginBottom: '16px' }}>
+                Creamos, configuramos y optimizamos tus campañas en Meta (Instagram + Facebook) y TikTok. Segmentación local, creatividades y seguimiento semanal.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px', flexGrow: 1 }}>
+                {[
+                  'Creación de anuncios y creatividades',
+                  'Segmentación por zona, edad e intereses',
+                  'Optimización semanal del rendimiento',
+                  'Informe mensual de resultados',
+                ].map((t, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#FF6B2B', flexShrink: 0, marginTop: '6px' }}></span>
+                    <span className="font-dm font-[300]" style={{ fontSize: '13px', color: '#444', lineHeight: 1.5 }}>{t}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: '#FFF3EE', borderRadius: '8px', padding: '10px 14px' }}>
+                <span className="font-dm italic" style={{ fontSize: '11px', color: '#C2400A' }}>El presupuesto publicitario lo pagas tú directamente a Meta/TikTok. Mínimo recomendado: 50€/mes.</span>
+              </div>
+            </div>
+
+            {/* Card 2 — Avatar Digital IA (DESTACADA) */}
+            <div style={{ borderRadius: '28px', border: '2px solid #FF6B2B', boxShadow: '0 8px 32px rgba(255,107,43,0.12)', padding: '2rem', display: 'flex', flexDirection: 'column', background: '#FFFFFF', position: 'relative' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', flexWrap: 'wrap' }}>
+                <Bot className="w-6 h-6 text-orange" />
+                <span className="font-syne font-[800]" style={{ fontSize: '10px', background: '#FF6B2B', color: '#fff', padding: '4px 10px', borderRadius: '50px', letterSpacing: '0.03em' }}>Incluido gratis en Plan Imperio</span>
+              </div>
+              <div style={{ marginBottom: '4px' }}>
+                <span className="font-syne font-[800]" style={{ fontSize: '32px', color: '#0F0F0F' }}>+75€</span>
+                <span className="font-dm text-gray-text" style={{ fontSize: '14px', marginLeft: '4px' }}>/mes</span>
+              </div>
+              <span className="font-mono" style={{ fontSize: '10px', color: '#ABABAB', display: 'block', marginBottom: '16px' }}>incluido en plan Imperio</span>
+              <h4 className="font-syne font-[700] text-black" style={{ fontSize: '18px', marginBottom: '8px' }}>Avatar Digital IA</h4>
+              <p className="font-dm font-[300]" style={{ fontSize: '13px', color: '#444', lineHeight: 1.7, marginBottom: '16px' }}>
+                Creamos una identidad digital con inteligencia artificial que representa a tu restaurante. Con voz propia, imagen y personalidad. Aparece en reels, stories y comunicados sin que tengas que salir tú en cámara.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flexGrow: 1 }}>
+                {[
+                  'Creación del avatar personalizado',
+                  'Voz generada con IA en español',
+                  'Integración en reels y stories',
+                  'Comunicados y novedades del restaurante',
+                ].map((t, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#FF6B2B', flexShrink: 0, marginTop: '6px' }}></span>
+                    <span className="font-dm font-[300]" style={{ fontSize: '13px', color: '#444', lineHeight: 1.5 }}>{t}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Card 3 — Google Business Profile */}
+            <div className="bg-white" style={{ borderRadius: '28px', border: '1px solid #e5e5e5', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', padding: '2rem', display: 'flex', flexDirection: 'column' }}>
+              <MapPin className="w-6 h-6 text-orange" style={{ marginBottom: '16px' }} />
+              <div style={{ marginBottom: '4px' }}>
+                <span className="font-syne font-[800]" style={{ fontSize: '32px', color: '#0F0F0F' }}>+49€</span>
+                <span className="font-dm text-gray-text" style={{ fontSize: '14px', marginLeft: '4px' }}>/mes</span>
+              </div>
+              <span style={{ display: 'block', marginBottom: '16px', height: '13px' }}></span>
+              <h4 className="font-syne font-[700] text-black" style={{ fontSize: '18px', marginBottom: '8px' }}>Google Business Profile</h4>
+              <p className="font-dm font-[300]" style={{ fontSize: '13px', color: '#444', lineHeight: 1.7, marginBottom: '16px' }}>
+                Gestionamos tu ficha en Google Maps y Google Search. Respondemos reseñas, actualizamos fotos, horarios y publicamos novedades para que aparezcas primero cuando alguien busca un restaurante cerca.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px', flexGrow: 1 }}>
+                {[
+                  'Respuesta a reseñas positivas y negativas',
+                  'Actualización de fotos y horarios',
+                  'Publicaciones semanales en la ficha',
+                  'Optimización para búsquedas locales',
+                ].map((t, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#FF6B2B', flexShrink: 0, marginTop: '6px' }}></span>
+                    <span className="font-dm font-[300]" style={{ fontSize: '13px', color: '#444', lineHeight: 1.5 }}>{t}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: '#F0FDF4', borderRadius: '8px', padding: '10px 14px' }}>
+                <span className="font-dm italic" style={{ fontSize: '11px', color: '#166534' }}>El 46% de las búsquedas en Google tienen intención local. Estar bien posicionado en Maps es clave para restaurantes.</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* ── BLOQUE 3 — CTA final ── */}
+        <div className="pub-block" style={{ background: '#0F0F0F', borderRadius: '24px', padding: '48px 40px', textAlign: 'center' }}>
+          <h3 className="font-syne font-[800]" style={{ fontSize: 'clamp(24px, 3vw, 32px)', color: '#FFFFFF', marginBottom: '12px' }}>¿No sabes qué necesita tu restaurante?</h3>
+          <p className="font-dm font-[300]" style={{ fontSize: '16px', color: 'rgba(255,255,255,0.6)', marginBottom: '32px', maxWidth: '520px', margin: '0 auto 32px' }}>
+            Cuéntanos cómo estás ahora y te decimos qué plan y qué add-ons tienen más sentido para ti. Sin compromiso.
+          </p>
+          <a
+            href="https://wa.me/34666068310?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20informaci%C3%B3n%20sobre%20vuestro%20servicio%20de%20gesti%C3%B3n%20de%20Redes%20Sociales.%20Gracias."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative overflow-hidden"
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '12px', padding: '20px 40px', borderRadius: '50px', background: '#FF6B2B', color: 'white', fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: '16px', transition: 'transform 0.2s', textDecoration: 'none' }}
+            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.03)'}
+            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></span>
+            <WhatsAppIcon className="w-5 h-5 relative z-10" />
+            <span className="relative z-10">Habla con nosotros gratis</span>
+          </a>
+        </div>
+
+      </div>
+    </section>
+  )
+}
+
 /* ─── PRICING ─── */
 function Pricing() {
   const sectionRef = useRef(null)
@@ -923,43 +1164,79 @@ function Pricing() {
         </span>
         <h2 className="font-syne font-[800] text-black" style={{ fontSize: 'clamp(36px, 5vw, 52px)', marginBottom: '16px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>Planes que llenan mesas</h2>
         <p className="font-dm text-gray-text" style={{ fontSize: '18px', marginBottom: '20px' }}>Elige el plan que mejor se adapte a tu restaurante. Sin permanencia.</p>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#FFF3EE', border: '1px solid rgba(255,107,43,0.2)', borderRadius: '50px', padding: '10px 20px' }}>
-          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#FF6B2B', flexShrink: 0 }}></span>
-          <span className="font-dm text-orange" style={{ fontSize: '13px' }}>El presupuesto publicitario lo paga el cliente directamente a Meta/TikTok. No está incluido.</span>
+      </div>
+
+      {/* Ad explainer block */}
+      <div style={{ ...innerContainer, maxWidth: '1720px', marginBottom: '32px' }}>
+        <div style={{ background: '#FFF8F5', borderLeft: '4px solid #FF6B2B', borderRadius: '12px', padding: '16px 20px' }}>
+          <span className="font-syne font-[700]" style={{ fontSize: '14px', color: '#0F0F0F', display: 'block', marginBottom: '12px' }}>¿Cómo funciona la publicidad?</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+              <Check className="w-4 h-4 shrink-0" style={{ marginTop: '2px', color: '#22C55E' }} />
+              <span className="font-dm" style={{ fontSize: '13px', color: '#333' }}>La gestión de anuncios (crear, optimizar y monitorizar tus campañas) está incluida en los planes Impulso, Dominio e Imperio.</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+              <Info className="w-4 h-4 shrink-0" style={{ marginTop: '2px', color: '#FF6B2B' }} />
+              <span className="font-dm" style={{ fontSize: '13px', color: '#333' }}>El presupuesto publicitario (el dinero que inviertes en Meta o TikTok) lo pagas tú directamente a la plataforma. No está incluido en el precio del plan. Nosotros lo gestionamos, tú lo financias.</span>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Cards */}
-      <div className="pricing-cards" style={{ ...innerContainer, maxWidth: '1320px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', alignItems: 'start' }}>
+      <div className="pricing-cards" style={{ ...innerContainer, maxWidth: '1720px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', alignItems: 'start' }}>
 
         <PricingCard
-          badge="Plan Básico"
-          badgeColor="bg-green-50 text-green-700"
-          name="Presencia Esencial"
-          tagline="Para empezar con presencia sólida"
+          badge="Plan Inicio"
+          badgeColor=""
+          badgeStyle={{ background: '#F5F5F3', color: '#555', border: '1px solid #E0E0E0' }}
+          name="Inicio"
+          tagline="Para restaurantes que quieren dar el primer paso en redes."
+          price="€90"
+          contentGrid={[['10', 'Fotos del restaurante'], ['2', 'Carruseles']]}
+          contentTotal="12 contenidos al mes"
+          contentNote="Las fotos las proporciona el restaurante"
+          networks={networkBasic}
+          includes={[
+            'Diseño y edición de carruseles',
+            'Planificación del calendario mensual',
+            'Publicación en Instagram y Facebook',
+            'Respuesta a comentarios y mensajes privados',
+          ]}
+          checkColor="text-orange"
+          addons={[
+            ['Avatar Digital IA', '+75€/mes', '#f5f3ff', '#7c3aed'],
+            ['Google Business Profile', '+49€/mes', '#F7F6F3', '#767676'],
+          ]}
+          ctaStyle="outline"
+        />
+
+        <PricingCard
+          badge="Plan Impulso"
+          badgeColor=""
+          badgeStyle={{ background: '#F0FDF4', color: '#166534' }}
+          name="Impulso"
+          tagline="Para restaurantes que quieren crecer con contenido profesional."
           price="€249"
-          contentGrid={[['4', 'Fotos estáticas'], ['2', 'Carruseles'], ['2', 'Reels · vídeos'], ['8', 'Stories · 2/sem']]}
-          contentTotal="16 contenidos al mes"
+          contentGrid={[['10', 'Fotos estáticas'], ['4', 'Carruseles'], ['2', 'Reels / vídeos'], ['8', 'Stories (2/semana)']]}
+          contentTotal="24 contenidos al mes"
           networks={networkBasic}
           includes={[
             'Creación y edición de todo el contenido',
             'Planificación del calendario mensual',
             'Publicación en redes sociales',
-            'Respuesta a comentarios y mensajes',
+            'Respuesta a comentarios y mensajes privados',
             'Optimización inicial de perfiles',
             'Resumen mensual de resultados',
           ]}
           checkColor="text-green-500"
-          adsSection={{
-            borderColor: '#FF6B2B',
-            bg: 'rgba(255,243,238,0.5)',
-            title: 'Publicidad en Meta — add-on opcional',
-            rows: [
-              ['Fee de gestión', '+49€/mes'],
-              ['Presupuesto mínimo', '50€/mes'],
-              ['Recomendado', '100–150€/mes'],
+          adBlocks={{
+            greenTitle: 'Gestión de anuncios Meta',
+            budgetRows: [
+              ['Mínimo recomendado', '50€/mes'],
+              ['Óptimo', '100–150€/mes'],
             ],
-            note: 'El cliente paga el presupuesto directamente a Meta.',
+            budgetNote: 'Se paga directamente a Meta desde tu cuenta.',
           }}
           addons={[
             ['Avatar Digital IA', '+75€/mes', '#f5f3ff', '#7c3aed'],
@@ -972,28 +1249,26 @@ function Pricing() {
           featured
           badge="Más popular"
           badgeColor="bg-orange text-white"
-          name="Crecimiento Activo"
-          tagline="Para atraer más clientes y dominar tu zona"
+          name="Dominio"
+          tagline="Para restaurantes que quieren dominar su zona."
           price="€399"
-          contentGrid={[['4', 'Fotos'], ['4', 'Carruseles'], ['4', 'Reels'], ['8', 'Stories']]}
-          contentTotal="20 contenidos al mes"
+          contentGrid={[['10', 'Fotos estáticas'], ['6', 'Carruseles'], ['4', 'Reels / vídeos'], ['8', 'Stories (2/semana)']]}
+          contentTotal="28 contenidos al mes"
           networks={networkFull}
           includes={[
-            'Todo lo del plan Básico',
+            'Todo lo del plan Impulso',
             ['Rediseño completo de perfiles', 'incluido'],
             'Estrategia mensual de contenido',
             'Informe mensual con métricas clave',
           ]}
           checkColor="text-orange"
-          adsSection={{
-            borderColor: '#FF6B2B',
-            bg: 'rgba(255,243,238,0.5)',
-            title: 'Publicidad — add-on opcional',
-            rows: [
-              ['Fee de gestión', '+49€/mes'],
-              ['Presupuesto mínimo', '100€/mes'],
-              ['Recomendado', '150–300€/mes'],
+          adBlocks={{
+            greenTitle: 'Gestión de anuncios Meta + TikTok',
+            budgetRows: [
+              ['Mínimo recomendado', '100€/mes'],
+              ['Óptimo', '150–300€/mes'],
             ],
+            budgetNote: 'Se paga directamente a Meta/TikTok desde tu cuenta.',
           }}
           addons={[
             ['Avatar Digital IA', '+75€/mes', '#f5f3ff', '#7c3aed'],
@@ -1003,33 +1278,32 @@ function Pricing() {
         />
 
         <PricingCard
-          badge="Plan Premium"
-          badgeColor="bg-purple-50 text-purple-700"
-          name="Dominio Local"
-          tagline="Para ser la referencia absoluta en tu zona"
+          badge="Plan Imperio"
+          badgeColor=""
+          badgeStyle={{ background: '#FFF3EE', color: '#C2400A' }}
+          extraBadges={[{ label: 'Avatar IA incluido gratis', icon: '★', style: { background: '#FF6B2B', color: 'white' } }]}
+          name="Imperio"
+          tagline="Para ser la referencia absoluta en tu zona."
           price="€599"
-          contentGrid={[['6', 'Fotos'], ['6', 'Carruseles'], ['6', 'Reels'], ['8', 'Stories']]}
-          contentTotal="26 contenidos al mes"
+          contentGrid={[['10', 'Fotos estáticas'], ['8', 'Carruseles'], ['6', 'Reels / vídeos'], ['8', 'Stories (2/semana)']]}
+          contentTotal="32 contenidos al mes"
           networks={networkFull}
           includes={[
-            'Todo lo del plan Crecimiento',
-            ['Gestión de anuncios Meta+TikTok', 'incluida'],
+            'Todo lo del plan Dominio',
+            ['Avatar Digital IA — creación e integración', 'incluido', '#FFF3EE', '#C2400A'],
             'Informe avanzado con analíticas detalladas',
             'Sesión estratégica mensual de 30 min',
           ]}
-          checkColor="text-purple-500"
-          adsSection={{
-            borderColor: '#a78bfa',
-            bg: 'rgba(245,243,255,0.5)',
-            title: 'Publicidad — incluida en plan',
-            rows: [
-              ['Fee de gestión', 'INCLUIDA', '#16a34a'],
-              ['Presupuesto mínimo', '150€/mes'],
-              ['Recomendado', '300–600€/mes'],
+          checkColor="text-orange"
+          adBlocks={{
+            greenTitle: 'Gestión de anuncios Meta + TikTok',
+            budgetRows: [
+              ['Mínimo recomendado', '150€/mes'],
+              ['Óptimo', '300–600€/mes'],
             ],
+            budgetNote: 'Se paga directamente a Meta/TikTok desde tu cuenta.',
           }}
           addons={[
-            ['Avatar Digital IA', '+75€/mes', '#f5f3ff', '#7c3aed'],
             ['Google Business Profile', '+49€/mes', '#F7F6F3', '#767676'],
           ]}
           ctaStyle="outline"
@@ -1234,6 +1508,7 @@ export default function App() {
       <FeatureContent />
       <FeatureTerminal />
       <Manifesto />
+      <PublicidadAddons />
       <Pricing />
       <FAQ />
       <FooterCTA />

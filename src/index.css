@@ -78,6 +78,19 @@ body {
   .pricing-cards {
     grid-template-columns: 1fr !important;
   }
+  .pub-addon-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .pub-block > div:first-child {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Pricing cards tablet — 2 columns */
+@media (min-width: 769px) and (max-width: 1200px) {
+  .pricing-cards {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
 }
 
 /* How it works dotted line — desktop only */
