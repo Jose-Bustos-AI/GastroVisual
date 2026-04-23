@@ -6,45 +6,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
     <!-- SEO -->
-    <title>GastroVisual — Gestión de redes sociales para restaurantes</title>
-    <meta name="description" content="Agencia de social media especializada en restaurantes. Gestionamos Instagram, Facebook, TikTok y Google Business para que llenes mesas cada día. Planes desde 90€/mes. Sin permanencia." />
-    <meta name="robots" content="index, follow" />
+    <title>GastroVisual | Agencia de Redes Sociales para Restaurantes en España</title>
+    <meta name="description" content="Agencia especializada en redes sociales para restaurantes. Gestionamos Instagram, Facebook, TikTok, publicidad en Meta y Google Business Profile para llenar tu restaurante de clientes. Planes desde 90€/mes sin permanencia." />
+    <meta name="keywords" content="agencia redes sociales restaurantes, gestión Instagram restaurantes, community manager hostelería, marketing para restaurantes, publicidad Meta restaurantes, Google Business Profile restaurantes, redes sociales hostelería España, Avatar Digital IA restaurantes, gestión TikTok restaurantes" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <link rel="canonical" href="https://gastrovisual.vercel.app/" />
     <meta name="author" content="GastroVisual" />
     <meta name="theme-color" content="#FF6B2B" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Geo / Local SEO -->
+    <meta name="geo.region" content="ES" />
+    <meta name="geo.placename" content="España" />
+    <meta name="language" content="Spanish" />
+    <meta http-equiv="content-language" content="es-ES" />
 
     <!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://gastrovisual.vercel.app/" />
-    <meta property="og:title" content="GastroVisual — Más clientes desde redes sociales" />
-    <meta property="og:description" content="Gestionamos las redes sociales de tu restaurante para que tú te centres en cocinar. Instagram, Facebook, TikTok y Google Business. Planes desde 90€/mes." />
+    <meta property="og:title" content="GastroVisual — Agencia de Redes Sociales para Restaurantes" />
+    <meta property="og:description" content="Gestionamos las redes sociales de tu restaurante: Instagram, Facebook, TikTok, publicidad Meta y Google Business. Planes desde 90€/mes. Sin permanencia." />
     <meta property="og:image" content="https://gastrovisual.vercel.app/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="GastroVisual, agencia de gestión de redes sociales para restaurantes" />
     <meta property="og:locale" content="es_ES" />
     <meta property="og:site_name" content="GastroVisual" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="GastroVisual — Más clientes desde redes sociales" />
-    <meta name="twitter:description" content="Gestionamos las redes sociales de tu restaurante. Instagram, Facebook, TikTok y Google Business. Planes desde 90€/mes. Sin permanencia." />
+    <meta name="twitter:title" content="GastroVisual — Agencia de Redes Sociales para Restaurantes" />
+    <meta name="twitter:description" content="Gestión profesional de Instagram, Facebook, TikTok y Google Business para restaurantes. Planes desde 90€/mes. Sin permanencia." />
     <meta name="twitter:image" content="https://gastrovisual.vercel.app/og-image.jpg" />
+    <meta name="twitter:image:alt" content="GastroVisual, agencia de redes sociales para restaurantes" />
 
-    <!-- Structured Data (JSON-LD) -->
+    <!-- Performance hints -->
+    <link rel="dns-prefetch" href="https://wa.me" />
+
+    <!-- Structured Data: Organization + ProfessionalService -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "ProfessionalService",
+      "@type": ["ProfessionalService", "Organization"],
+      "@id": "https://gastrovisual.vercel.app/#organization",
       "name": "GastroVisual",
-      "description": "Agencia de social media especializada en restaurantes. Gestión de Instagram, Facebook, TikTok y Google Business Profile.",
+      "alternateName": "GastroVisual Agencia",
+      "description": "Agencia de social media especializada en restaurantes. Gestión profesional de Instagram, Facebook, TikTok, publicidad en Meta y Google Business Profile para hostelería.",
       "url": "https://gastrovisual.vercel.app",
-      "logo": "https://gastrovisual.vercel.app/favicon.svg",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://gastrovisual.vercel.app/favicon.svg",
+        "width": 512,
+        "height": 512
+      },
+      "image": "https://gastrovisual.vercel.app/og-image.jpg",
       "priceRange": "€€",
+      "currenciesAccepted": "EUR",
+      "paymentAccepted": "Tarjeta, Transferencia bancaria",
       "areaServed": {
         "@type": "Country",
         "name": "España"
       },
-      "serviceType": ["Gestión de redes sociales", "Publicidad en Meta", "Publicidad en TikTok", "Google Business Profile"],
+      "knowsAbout": ["Marketing digital para restaurantes", "Gestión de redes sociales", "Publicidad en Meta", "Publicidad en TikTok", "Google Business Profile", "Avatar Digital IA", "Community management hostelería"],
+      "serviceType": ["Gestión de redes sociales", "Publicidad en Meta", "Publicidad en TikTok", "Google Business Profile", "Avatar Digital IA"],
       "offers": {
         "@type": "AggregateOffer",
         "lowPrice": "90",
@@ -56,8 +81,64 @@
         "@type": "ContactPoint",
         "contactType": "sales",
         "url": "https://wa.me/34666068310",
-        "availableLanguage": "Spanish"
-      }
+        "availableLanguage": ["Spanish", "es-ES"]
+      },
+      "slogan": "Más clientes desde redes sociales"
+    }
+    </script>
+
+    <!-- Structured Data: WebSite -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "https://gastrovisual.vercel.app/#website",
+      "url": "https://gastrovisual.vercel.app/",
+      "name": "GastroVisual",
+      "description": "Agencia de redes sociales para restaurantes en España",
+      "inLanguage": "es-ES",
+      "publisher": { "@id": "https://gastrovisual.vercel.app/#organization" }
+    }
+    </script>
+
+    <!-- Structured Data: Individual Services (pricing plans) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Service",
+          "name": "Plan Inicio — Gestión de redes sociales para restaurantes",
+          "provider": { "@id": "https://gastrovisual.vercel.app/#organization" },
+          "description": "Plan de entrada para restaurantes que empiezan en redes. 12 contenidos al mes (10 fotos y 2 carruseles) en Instagram y Facebook.",
+          "areaServed": "España",
+          "offers": { "@type": "Offer", "price": "90", "priceCurrency": "EUR", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "90", "priceCurrency": "EUR", "referenceQuantity": { "@type": "QuantitativeValue", "value": 1, "unitCode": "MON" } } }
+        },
+        {
+          "@type": "Service",
+          "name": "Plan Impulso — Gestión de redes + publicidad Meta",
+          "provider": { "@id": "https://gastrovisual.vercel.app/#organization" },
+          "description": "Contenido profesional y gestión de publicidad en Meta incluida. 24 contenidos al mes en Instagram y Facebook.",
+          "areaServed": "España",
+          "offers": { "@type": "Offer", "price": "249", "priceCurrency": "EUR" }
+        },
+        {
+          "@type": "Service",
+          "name": "Plan Dominio — Redes + publicidad Meta y TikTok",
+          "provider": { "@id": "https://gastrovisual.vercel.app/#organization" },
+          "description": "Para restaurantes que quieren dominar su zona. 28 contenidos al mes en Instagram, Facebook, TikTok y YouTube con publicidad incluida.",
+          "areaServed": "España",
+          "offers": { "@type": "Offer", "price": "399", "priceCurrency": "EUR" }
+        },
+        {
+          "@type": "Service",
+          "name": "Plan Imperio — Servicio premium con Avatar Digital IA",
+          "provider": { "@id": "https://gastrovisual.vercel.app/#organization" },
+          "description": "Servicio premium para restaurantes referentes. 32 contenidos al mes, Avatar Digital IA incluido gratis y sesión estratégica mensual.",
+          "areaServed": "España",
+          "offers": { "@type": "Offer", "price": "599", "priceCurrency": "EUR" }
+        }
+      ]
     }
     </script>
 
@@ -106,13 +187,24 @@
       <!-- Static fallback content for crawlers / SEO / no-JS browsers. React replaces this on mount. -->
       <div id="seo-fallback">
       <header>
-        <h1>GastroVisual — Más clientes desde redes sociales</h1>
-        <p>Gestionamos las redes sociales de tu restaurante para que tú te centres en lo que mejor sabes hacer: cocinar. Agencia de social media especializada en restaurantes. Instagram, Facebook, TikTok y Google Business Profile.</p>
+        <h1>GastroVisual — Agencia de redes sociales para restaurantes en España</h1>
+        <p><strong>Más clientes desde redes sociales.</strong> Gestionamos las redes sociales de tu restaurante para que tú te centres en lo que mejor sabes hacer: cocinar. Somos una agencia de social media y community management especializada en restaurantes, bares y negocios de hostelería. Cubrimos Instagram, Facebook, TikTok, YouTube, publicidad en Meta y Google Business Profile.</p>
         <a href="https://wa.me/34666068310">Contactar por WhatsApp</a>
       </header>
 
       <section>
-        <h2>Cómo funciona</h2>
+        <h2>¿Por qué elegir GastroVisual como agencia de redes sociales para tu restaurante?</h2>
+        <p>GastroVisual está especializada 100% en hostelería. No somos una agencia generalista: conocemos los retos de un restaurante, las horas punta, cómo vender un menú del día por Instagram, cómo crear un reel que pare el scroll y cómo usar la publicidad en Meta y TikTok para llenar mesas cada semana.</p>
+        <ul>
+          <li>Gestión integral: contenido, publicación, comunidad y anuncios.</li>
+          <li>Sin permanencia: cancela o cambia de plan cuando quieras.</li>
+          <li>Equipo propio: fotógrafos, editores de vídeo y especialistas en publicidad.</li>
+          <li>Transparencia en resultados: informes mensuales con métricas reales.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Cómo funciona nuestro servicio</h2>
         <ol>
           <li><strong>Análisis inicial.</strong> Estudiamos tu restaurante, tu estilo y tu competencia directa para construir una estrategia sólida.</li>
           <li><strong>Creación de contenido.</strong> Producimos fotos, reels, carruseles y stories con identidad propia, sin plantillas ni stock.</li>
@@ -121,8 +213,8 @@
       </section>
 
       <section>
-        <h2>El desglose de contenido</h2>
-        <p>Cada plan incluye contenido real, editado por profesionales. No templates. No stock. Tu restaurante, tu voz.</p>
+        <h2>El desglose de contenido mensual</h2>
+        <p>Cada plan incluye contenido real, editado por profesionales. No templates. No stock. Tu restaurante, tu voz. Producimos fotos de plato, reels de cocina, carruseles de menú, stories de día a día y publicaciones estratégicas.</p>
       </section>
 
       <section>
