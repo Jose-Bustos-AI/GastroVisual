@@ -143,7 +143,7 @@ function Hero() {
         pinSpacing: true,
         fastScrollEnd: true,
         preventOverlaps: true,
-        onUpdate: (self) => { targetT = self.progress * dur },
+        onUpdate: (self) => { targetT = Math.min(self.progress * dur, dur - (1 / 24)) },
       })
     }
 
