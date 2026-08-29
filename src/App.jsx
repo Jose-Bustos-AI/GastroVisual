@@ -98,64 +98,77 @@ function Navbar() {
 function Hero() {
   const heroRef = useRef(null)
   const videoRef = useRef(null)
+  const [videoReady, setVideoReady] = useState(false)
 
   useEffect(() => {
-    const hero = heroRef.current
     const video = videoRef.current
-    if (!hero || !video) return
+    if (!video) return
 
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    if (reducedMotion.matches) return
+    let st
+    let raf
 
-    let scrollTrigger
-    let animationFrame
-    let currentTime = 0
-    let targetTime = 0
-
-    const unlockVideo = () => {
-      const playback = video.play()
-      if (playback) playback.then(() => video.pause()).catch(() => {})
-    }
-
-    const animateFrame = () => {
-      currentTime += (targetTime - currentTime) * 0.1
-      if (Math.abs(video.currentTime - currentTime) > 0.015) video.currentTime = currentTime
-      animationFrame = requestAnimationFrame(animateFrame)
-    }
-
-    const initialiseScrub = () => {
-      if (scrollTrigger || !Number.isFinite(video.duration) || video.duration <= 0) return
+    document.addEventListener('touchstart', () => {
+      video.play()
       video.pause()
+    }, { once: true })
+
+    video.style.transform = 'translateZ(0)'
+    video.style.willChange = 'transform'
+    ScrollTrigger.config({ limitCallbacks: true, syncInterval: 40 })
+
+    const initScrub = () => {
+      const dur = video.duration
+      if (!dur || !isFinite(dur)) return
+
+      setVideoReady(true)
       video.currentTime = 0
-      animationFrame = requestAnimationFrame(animateFrame)
-      scrollTrigger = ScrollTrigger.create({
-        trigger: hero,
+
+      let currentT = 0
+      let targetT = 0
+      const lerpFactor = 0.1
+
+      const tick = () => {
+        currentT += (targetT - currentT) * lerpFactor
+        if (Math.abs(video.currentTime - currentT) > 0.015) video.currentTime = currentT
+        raf = requestAnimationFrame(tick)
+      }
+      raf = requestAnimationFrame(tick)
+
+      st = ScrollTrigger.create({
+        trigger: '.hero-section',
         start: 'top top',
         end: '+=200%',
         scrub: 2.5,
         pin: true,
         pinSpacing: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        onUpdate: ({ progress }) => { targetTime = progress * video.duration },
+        fastScrollEnd: true,
+        preventOverlaps: true,
+        onUpdate: (self) => { targetT = self.progress * dur },
       })
-      ScrollTrigger.refresh()
     }
 
-    document.addEventListener('touchstart', unlockVideo, { once: true, passive: true })
-    video.addEventListener('loadedmetadata', initialiseScrub)
-    if (video.readyState >= 1) initialiseScrub()
+    const onReady = () => {
+      video.removeEventListener('loadedmetadata', onReady)
+      video.removeEventListener('loadeddata', onReady)
+      requestAnimationFrame(() => initScrub())
+    }
+
+    if (video.readyState >= 1) requestAnimationFrame(() => initScrub())
+    else {
+      video.addEventListener('loadedmetadata', onReady)
+      video.addEventListener('loadeddata', onReady)
+    }
 
     return () => {
-      document.removeEventListener('touchstart', unlockVideo)
-      video.removeEventListener('loadedmetadata', initialiseScrub)
-      if (animationFrame) cancelAnimationFrame(animationFrame)
-      if (scrollTrigger) scrollTrigger.kill()
+      video.removeEventListener('loadedmetadata', onReady)
+      video.removeEventListener('loadeddata', onReady)
+      if (st) st.kill()
+      if (raf) cancelAnimationFrame(raf)
     }
   }, [])
 
-  return <section className="hero" id="inicio" ref={heroRef}>
-    <video ref={videoRef} className="hero-media" src="/hero-video-scrub.mp4" muted playsInline preload="auto" poster="/og-image-v2.jpg" /><div className="hero-shade" />
+  return <section className="hero hero-section" id="inicio" ref={heroRef}>
+    <video ref={videoRef} className="hero-media" src="/hero-video-scrub.mp4" muted playsInline preload="auto" poster="/og-image-v2.jpg" style={{ opacity: videoReady ? 1 : 0, transition: 'opacity .5s ease' }} /><div className="hero-shade" />
     <div className="hero-inner"><div className="hero-copy">
       <span className="eyebrow"><i /> Especialistas en restaurantes</span>
       <h1>Haz visible tu restaurante.<em>Atrae más clientes.</em></h1>
