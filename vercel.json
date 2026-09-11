@@ -1,30 +1,25 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
-  "headers": [
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
     {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
-      ]
+      "source": "/aviso-legal/:path*",
+      "destination": "https://dania360.com/aviso-legal/",
+      "statusCode": 301
     },
     {
-      "source": "/assets/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      "source": "/privacidad/:path*",
+      "destination": "https://dania360.com/privacidad/",
+      "statusCode": 301
     },
     {
-      "source": "/",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
+      "source": "/cookies/:path*",
+      "destination": "https://dania360.com/cookies/",
+      "statusCode": 301
     },
     {
-      "source": "/sitemap.xml",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }, { "key": "Content-Type", "value": "application/xml" }]
-    },
-    {
-      "source": "/robots.txt",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }, { "key": "Content-Type", "value": "text/plain" }]
+      "source": "/:path*",
+      "destination": "https://dania360.com/gestion-redes-sociales-restaurantes/",
+      "statusCode": 301
     }
   ]
 }
