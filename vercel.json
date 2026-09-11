@@ -2,8 +2,23 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
+      "source": "/",
+      "destination": "https://dania360.com/gestion-redes-sociales-restaurantes/",
+      "statusCode": 301
+    },
+    {
+      "source": "/aviso-legal/",
+      "destination": "https://dania360.com/aviso-legal/",
+      "statusCode": 301
+    },
+    {
       "source": "/aviso-legal/:path*",
       "destination": "https://dania360.com/aviso-legal/",
+      "statusCode": 301
+    },
+    {
+      "source": "/privacidad/",
+      "destination": "https://dania360.com/privacidad/",
       "statusCode": 301
     },
     {
@@ -12,12 +27,17 @@
       "statusCode": 301
     },
     {
+      "source": "/cookies/",
+      "destination": "https://dania360.com/cookies/",
+      "statusCode": 301
+    },
+    {
       "source": "/cookies/:path*",
       "destination": "https://dania360.com/cookies/",
       "statusCode": 301
     },
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "destination": "https://dania360.com/gestion-redes-sociales-restaurantes/",
       "statusCode": 301
     }
